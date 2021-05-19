@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AI;
 using Panda;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace Panda.Examples.Shooter
 {
@@ -88,6 +89,94 @@ namespace Panda.Examples.Shooter
             {
                 Task.current.Succeed(); 
             }
+        }
+        [Task]
+        public void PickDestination(int x, int z)
+        {
+            //seta o x e o y do destino
+            Vector3 dest = new Vector3(x, 0, z);
+            //seta o destino
+            agent.SetDestination(dest);
+            //da a task como sucesso
+            Task.current.Succeed();
+
+        }
+        [Task]
+        public void TargetPlayer()
+        {
+            //seta a target para o transform position do player
+            target = player.transform.position;
+            //da a task como sucesso
+            Task.current.Succeed();
+        }
+        [Task]
+        public bool Fire()
+        {
+            //define o instantiade da bala como um gameobject chamado bullet
+            GameObject bullet = GameObject.Instantiate(bulletPrefab, bulletSpawn.transform.position, bulletSpawn.transform.rotation);
+
+            //da um addforce no rigidbody
+            bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * 2000);
+
+            return true;
+        }
+        [Task]
+        public void LookAtTarget()
+        {
+
+            //define a direcao = target - transform.position
+            Vector3 direction = target - this.transform.position;
+
+            //faz a rotacao
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotSpeed);
+
+
+            if (Task.isInspected)
+                Task.current.debugInfo = string.Format("angle={0}", Vector3.Angle(this.transform.forward, direction));
+
+            //analisa o angulo e se for <5
+            if (Vector3.Angle(this.transform.forward, direction) < 5.0f)
+            {
+                //da a task como sucesso
+                Task.current.Succeed();
+            }    
+        }
+        [Task]
+        bool SeePlayer()
+        {
+
+            Vector3 distance = player.transform.position - this.transform.position;
+            //cria o raycast
+            RaycastHit hit;
+            //define seewall false
+            bool seeWall = false;
+            //define os parametros do drawray
+            Debug.DrawRay(this.transform.position, distance, Color.red);
+            //se o raycast colidir
+            if(Physics.Raycast(this.transform.position, distance, out hit))
+            {
+                //se colidir com algo com a tag wall
+                if (hit.collider.gameObject.tag == "wall")
+                {
+                    //define seewall true
+                    seeWall = true;
+                }
+            }
+
+            if(Task.isInspected)
+                Task.current.debugInfo = string.Format("wall={0}", seeWall);
+
+            if (distance.magnitude < visibleRange && !seeWall)
+                return true;
+            else
+                return false;
+        }
+        [Task]
+        bool Turn(float angle)
+        {
+            var p = this.transform.position + Quaternion.AngleAxis(angle, Vector3.up) * this.transform.forward;
+            target = p;
+            return true;
         }
     }
 }
