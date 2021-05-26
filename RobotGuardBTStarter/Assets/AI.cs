@@ -178,5 +178,24 @@ namespace Panda.Examples.Shooter
             target = p;
             return true;
         }
+
+        [Task]                                                 
+        public bool IsHealthLessThan(float health)             
+        {
+            //detecta se a vida esta menor que a propria vida pra dar seguimento a outro processo
+            return this.health < health;                      
+        }
+
+        [Task]                
+        //destruir o gameobject
+        public bool Explode()                  
+        {
+            //destroi a barra de vida
+            Destroy(healthBar.gameObject);     
+            //destroi o proprio gameobject
+            Destroy(this.gameObject);          
+            //retorna verdadeiro
+            return true;                       
+        }
     }
 }
