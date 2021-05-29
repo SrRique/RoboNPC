@@ -1207,7 +1207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 854148011}
-  bulletSpawn: {fileID: 0}
+  bulletSpawn: {fileID: 1576203221}
   healthBar: {fileID: 0}
   bulletPrefab: {fileID: 1340652751863676, guid: bffaf0784cc114b09a720f7000e375be,
     type: 3}

@@ -1,15 +1,20 @@
 tree("Root")
 			parallel
-					repeat mute tree("Patrol")        
+					//verifica se esta executando o patrol
+					repeat mute tree("Patrol")    
+					//verifica se esta executando o Dead
 					repeat mute tree("Dead")          
 	
 tree("Patrol")
 			fallback
-					tree("Attack")                     
-					while IsHealthLessThan(40.0)       
+					//executa o tree attack
+					tree("Attack")         
+					//se a vida for menor que 40
+					while IsHealthLessThan(40.0)     
+						//volta ao wander
 						fallback                       
 							tree("Wander")             
-
+//executa a arvore de attack
 tree("Attack")                                     
 			while SeePlayer                            
 					sequence
@@ -18,10 +23,11 @@ tree("Attack")
 						Fire                          
 
 tree("Dead")                                         
-			sequence                          
+			sequence    
+			//se a vida estiver menos de 0.1, destroy o player
 					IsHealthLessThan(0.1)             
 					Explode                           
-
+//executa a arvore de Wander
 tree("Wander")
 			sequence
     				PickRandomDestination               

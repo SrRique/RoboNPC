@@ -1,4 +1,6 @@
 tree("Root")
 	sequence
+	//escolhe um destino aleatorio
 		PickRandomDestination
-		MoveToDestination
+		//vai ate o destino
+		MoveToDestination  
